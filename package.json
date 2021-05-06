@@ -10,6 +10,7 @@
     "classnames": "^2.2.6",
     "codemirror": "^5.54.0",
     "dompurify": "^2.0.12",
+    "immer": "^9.0.2",
     "immutable": "^4.0.0-rc.12",
     "include-media": "^1.4.9",
     "marked": "^1.1.0",
@@ -26,6 +27,7 @@
     "redux": "^4.0.5",
     "redux-actions": "^2.6.5",
     "redux-pender": "^2.0.12",
+    "redux-thunk": "^2.3.0",
     "remove-markdown": "^0.3.0"
   },
   "scripts": {
