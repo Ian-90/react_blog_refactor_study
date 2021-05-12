@@ -43,13 +43,3 @@ const postReducer = produce((state, action) => {
 }, initialState)
 
 export default postReducer
-
-// export default handleActions({
-//   ...pender({
-//     type: GET_POST,
-//     onSuccess: (state, action) => {
-//       const { data: post } = action.payload
-//       return state.set('post', fromJS(post))
-//     }
-//   })
-// }, initiaState)

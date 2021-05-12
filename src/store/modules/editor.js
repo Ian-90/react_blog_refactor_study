@@ -1,6 +1,3 @@
-import { createAction, handleActions } from 'redux-actions'
-import { Map } from 'immutable'
-import { pender } from 'redux-pender'
 import produce from 'immer'
 import * as api from 'lib/api'
 
