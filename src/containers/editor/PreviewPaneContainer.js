@@ -1,22 +1,14 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import PreviewPane from 'components/editor/PreviewPane'
 
-class PreviewPaneContainer extends Component {
-  render() {
-    const { title, markdown } = this.props
-    return (
-      <PreviewPane
-        title={title}
-        markdown={markdown}
-      />
-    )
-  }
+const PreviewPaneContainer = () => {
+  const { title, markdown } = useSelector(state => state.editor)
+  return (
+    <PreviewPane
+      title={title}
+      markdown={markdown}
+    />
+  )  
 }
 
-export default connect(
-  (state) => ({
-    title: state.editor.get('title'),
-    markdown: state.editor.get('markdown')
-  })
-)(PreviewPaneContainer)
+export default PreviewPaneContainer
