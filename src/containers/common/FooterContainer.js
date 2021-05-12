@@ -1,39 +1,27 @@
-import React, { Component } from 'react'
 import Footer from 'components/common/Footer'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
 import * as baseActions from 'store/modules/base'
 
-class FooterContainer extends Component {
-  handleLoginClick = async () => {
-    const { BaseActions, logged } = this.props
+const FooterContainer = () => {
+  const { logged } = useSelector(state => state.base)
+  const dispatch = useDispatch()
+  const handleLoginClick = async () => {
     if (logged) {
       try {
-        await BaseActions.logout()
+        await baseActions.logout()
+        localStorage.removeItem('logged')
         window.location.reload()
       } catch(e) {
         console.log(e)
       }
       return
     }
-    BaseActions.showModal('login')
-    BaseActions.initializeLoginModal()
+    dispatch(baseActions.showModal('login'))
+    dispatch(baseActions.initializeLoginModal())
   }
-
-  render() {
-    const { handleLoginClick } = this
-    const { logged } = this.props
-    return (
-      <Footer onLoginClick={handleLoginClick} logged={logged} />
-    )
-  }
+  return (
+    <Footer onLoginClick={handleLoginClick} logged={logged} />
+  )
 }
 
-export default connect(
-  (state) => ({
-    logged: state.base.get('logged')
-  }),
-  (dispatch) => ({
-    BaseActions: bindActionCreators(baseActions, dispatch)
-  })
-)(FooterContainer)
+export default FooterContainer

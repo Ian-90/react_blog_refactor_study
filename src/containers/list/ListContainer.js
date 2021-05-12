@@ -14,7 +14,7 @@ const ListContainer = ({ tag, page }) => {
   }, [page, tag, dispatch])
 
   if (loading) {
-    return null
+    return <div>loading...</div>
   }
 
   return (

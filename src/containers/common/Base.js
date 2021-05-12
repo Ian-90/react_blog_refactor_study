@@ -1,34 +1,26 @@
-import React, { Component } from 'react'
+import { useEffect } from 'react'
 import LoginModalContainer from 'containers/modal/LoginModalContainer'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { useDispatch } from 'react-redux'
 import * as baseActions from 'store/modules/base'
 
-class Base extends Component {
-  initialize = async () => {
-    const { BaseActions } = this.props
-    if (localStorage.logged === "true") {
-      BaseActions.tempLogin()
+const Base = () => {
+  const dispatch = useDispatch()
+  const initialize = async () => {
+    if (localStorage.getItem('logged') === "true") {
+      dispatch(baseActions.tempLogin())
     }
-    BaseActions.checkLogin()
+    dispatch(baseActions.checkLogin())
   }
 
-  componentDidMount = () => {
-    this.initialize()
-  }
+  useEffect(() => {
+    initialize()
+  }, [])
 
-  render() {
-    return (
-      <div>
-        <LoginModalContainer />
-      </div>
-    )
-  }
+  return (
+    <div>
+      <LoginModalContainer />
+    </div>
+  )
 }
 
-export default connect(
-  null,
-  (dispatch) => ({
-    BaseActions: bindActionCreators(baseActions, dispatch)
-  })
-)(Base)
+export default Base
