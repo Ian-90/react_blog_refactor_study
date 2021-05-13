@@ -5,9 +5,7 @@ const GET_POST = 'post/GET_POST'
 const GET_POST_SUCCESS = 'post/GET_POST_SUCCESS'
 const GET_POST_ERROR = 'post/GET_POST_ERROR'
 
-// TODO: REMOVE modal 연동 필요
-const REMOVE_POST = 'post/REMOVE_POST'
-
+export const removePost = api.removePost
 export const getPost = (id) => async (dispatch) => {
   dispatch({ type: GET_POST})
   try {
