@@ -1,52 +1,39 @@
-import React, { Component } from 'react'
+import { useState, useLayoutEffect, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './ModalWrapper.module.scss'
 
 const cx = classNames.bind(styles)
 
-class ModalWrapper extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      animate: false
-    }
+const ModalWrapper = ({ children, visible }) => {
+  const [animate, setAnimate] = useState(false)
+
+  const startAnimation = () => {
+    setAnimate(true)
+
+    setTimeout(() => setAnimate(false), 250)
   }
 
-  startAnimation = () => {
-    this.setState({
-      animate: true
-    })
+  useLayoutEffect(() => {
+      if (visible) {
+        startAnimation()
+      }
+      return () => startAnimation()
+  }, [visible])
 
-    setTimeout(() => {
-      this.setState({
-        animate: false
-      })
-    }, 250)
-  }
+  const animation = animate && (visible ? 'enter' : 'leave')
 
-  componentDidUpdate = (prevProps, prevState) => {
-    if (prevProps.visible !== this.props.visible) {
-      this.startAnimation()
-    }    
-  }
+  if (!visible && !animate) return null
 
-  render() {
-    const { children, visible } = this.props
-    const { animate } = this.state
-    if (!visible && !animate) return null
-
-    const animation = animate && (visible ? 'enter' : 'leave')
-    return (
-      <div>
-        <div className={cx('gray-background', animation)} />
-        <div className={cx('modal-wrapper')}>
-          <div className={cx('modal', animation)}>
-            {children}
-          </div>
+  return (
+    <div>
+      <div className={cx('gray-background', animation)} />
+      <div className={cx('modal-wrapper')}>
+        <div className={cx('modal', animation)}>
+          {children}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default ModalWrapper
