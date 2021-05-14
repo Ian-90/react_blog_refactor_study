@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './ModalWrapper.module.scss'
 
