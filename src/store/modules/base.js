@@ -43,8 +43,8 @@ export const login = (password) => async (dispatch) => {
 export const checkLogin = () => async (dispatch) => {
   dispatch({ type: CHECK_LOGIN })
   try {
-    const { logged } = await api.checkLogin()
-    dispatch({ type: CHECK_LOGIN_SUCCESS, payload: logged })
+    const { data } = await api.checkLogin()
+    dispatch({ type: CHECK_LOGIN_SUCCESS, payload: data.logged })
   } catch (error) {
     dispatch({ type: CHECK_LOGIN_ERROR, payload: error })
   }
