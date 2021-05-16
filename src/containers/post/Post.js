@@ -3,12 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import PostInfo from 'components/post/PostInfo'
 import PostBody from 'components/post/PostBody'
 import { getPost } from 'store/modules/post'
+import { initialize } from 'store/modules/editor'
 
 const Post = ({ id }) => {
   const { loading, post, error } = useSelector((state) => state.post)
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(initialize())
     dispatch(getPost(id))
   }, [dispatch, id])
 
