@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { useRef, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './EditorPane.module.scss'
 import CodeMirror from 'codemirror'
@@ -12,81 +12,74 @@ import 'codemirror/theme/monokai.css'
 
 const cx = classNames.bind(styles)
 
-class EditorPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+const EditorPane = ({
+  title,
+  tags,
+  markdown,
+  onChangeInput,
+}) => {
+  const editor = useRef()
+  const codeMirror = useRef()
+  const cursor = useRef()
 
-    }
-    this.editor = React.createRef()
-    this.codeMirror = null
-    this.cursor = null
-  }
+  const handleChange = ({ target: { value, name }}) => onChangeInput({ name, value })
 
-  handleChange = ({ target: { value, name }}) => {
-    const { onChangeInput } = this.props
-    onChangeInput({ name, value }) 
-  }
-
-  handleChangeMarkdown = (doc) => {
-    const { onChangeInput } = this.props
-    this.cursor = doc.getCursor()
+  const handleChangeMarkdown = (doc) => {
+    cursor.current = doc.getCursor()
     onChangeInput({
       name: 'markdown',
       value: doc.getValue()
     })
   }
 
-  initializeEditor = () => {
-    this.codeMirror = CodeMirror(this.editor.current, {
+  const initializeEditor = () => {
+    codeMirror.current = CodeMirror(editor.current, {
       mode: 'markdown',
       theme: 'monokai',
       lineNumbers: true,
       lineWrapping: true,
     })
 
-    this.codeMirror.on('change', this.handleChangeMarkdown)
+    codeMirror.current.on('change', handleChangeMarkdown)
   }
 
-  componentDidMount = () => {
-    this.initializeEditor()
-  }
+  useEffect(() => {
+    initializeEditor()
+  }, [])
 
-  componentDidUpdate = (prevProps, prevState) => {
-    if(prevProps.markdown !== this.props.markdown) {
-      const { codeMirror, cursor } = this
-      if(!codeMirror) return
-      codeMirror.setValue(this.props.markdown)
-      if(!cursor) return
-      codeMirror.setCursor(cursor)
+  useEffect(() => {
+    if (markdown) {
+      if (codeMirror.current) {
+        codeMirror.current.setValue(markdown)
+      }
+
+      if (cursor.current) {
+        codeMirror.current.setCursor(cursor.current)
+      }
     }
-  }
+  }, [markdown])
 
-  render() {
-    const { handleChange } = this
-    const { title, tags } = this.props
-    return (
-      <div className={cx('editor-pane')}>
+  return (
+    <div className={cx('editor-pane')}>
+      <input
+        className={cx('title')}
+        placeholder="제목을 입력하세요"
+        name="title"
+        value={title}
+        onChange={handleChange}
+      />
+      <div className={cx('code-editor')} ref={editor}></div>
+      <div className={cx('tags')}>
+        <div className={cx('description')}>태그</div>
         <input
-          className={cx('title')}
-          placeholder="제목을 입력하세요"
-          name="title"
-          value={title}
+          name="tags"
+          placeholder="태그를 입력하세요 (쉼표로 구분)"
+          value={tags}
           onChange={handleChange}
         />
-        <div className={cx('code-editor')} ref={this.editor}></div>
-        <div className={cx('tags')}>
-          <div className={cx('description')}>태그</div>
-          <input
-            name="tags"
-            placeholder="태그를 입력하세요 (쉼표로 구분)"
-            value={tags}
-            onChange={handleChange}
-          />
-        </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default EditorPane
