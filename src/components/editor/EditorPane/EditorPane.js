@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames/bind'
 import styles from './EditorPane.module.scss'
 import CodeMirror from 'codemirror'
@@ -19,13 +19,13 @@ const EditorPane = ({
   onChangeInput,
 }) => {
   const editor = useRef()
-  const codeMirror = useRef()
-  const cursor = useRef()
+  const [codeMirror, setCodeMirror] = useState(null)
+  const [cursor, setCursor] = useState(null)
 
   const handleChange = ({ target: { value, name }}) => onChangeInput({ name, value })
 
   const handleChangeMarkdown = (doc) => {
-    cursor.current = doc.getCursor()
+    setCursor(doc.getCursor())
     onChangeInput({
       name: 'markdown',
       value: doc.getValue()
@@ -33,14 +33,15 @@ const EditorPane = ({
   }
 
   const initializeEditor = () => {
-    codeMirror.current = CodeMirror(editor.current, {
+    const codeMirrorEditor = CodeMirror(editor.current, {
       mode: 'markdown',
       theme: 'monokai',
       lineNumbers: true,
       lineWrapping: true,
     })
-
-    codeMirror.current.on('change', handleChangeMarkdown)
+  
+    codeMirrorEditor.on('change', handleChangeMarkdown)
+    setCodeMirror(codeMirrorEditor)
   }
 
   useEffect(() => {
@@ -49,12 +50,12 @@ const EditorPane = ({
 
   useEffect(() => {
     if (markdown) {
-      if (codeMirror.current) {
-        codeMirror.current.setValue(markdown)
+      if (codeMirror) {
+        codeMirror.setValue(markdown)
       }
 
-      if (cursor.current) {
-        codeMirror.current.setCursor(cursor.current)
+      if (cursor) {
+        codeMirror.setCursor(cursor)
       }
     }
   }, [markdown])
