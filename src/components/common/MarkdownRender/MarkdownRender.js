@@ -1,4 +1,3 @@
-// import React, { Component } from 'react'
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './MarkdownRender.module.scss'
