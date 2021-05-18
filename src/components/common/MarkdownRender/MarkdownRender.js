@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+// import React, { Component } from 'react'
+import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './MarkdownRender.module.scss'
 import marked from 'marked'
@@ -8,53 +9,35 @@ import DOMPurify from 'dompurify'
 
 const cx = classNames.bind(styles)
 
-class MarkdownRender extends Component {
-  constructor(props) {
-    super(props);
-    const { markdown } = props
-    this.state = {
-      html: markdown ? DOMPurify.sanitize(marked(markdown, { breaks: true })) : '',
-    }
-  }
+const MarkdownRender = ({ markdown }) => {
+  const [html, setHtml] = useState('')
 
-  renderMarkdown = () => {
-    const { markdown } = this.props
-
-    if(!markdown) {
-      this.setState({ html: ''})
+  const renderMarkdown = () => {
+    if (!markdown) {
+      setHtml('')
       return
     }
 
-    this.setState({
-      html: DOMPurify.sanitize(marked(markdown, {
-        breaks: true
-      }))
-    })
+    setHtml(DOMPurify.sanitize(marked(markdown, {
+      breaks: true,
+    })))
   }
 
-  componentDidMount = () => Prism.highlightAll()
+  useEffect(() => {
+    renderMarkdown()
+  }, [markdown])
 
-  componentDidUpdate = (prevProps, prevState) => {
-    if(prevProps.markdown !== this.props.markdown) {
-      this.renderMarkdown()
-    }
+  useEffect(() => {
+    Prism.highlightAll()
+  }, [html])
 
-    if(prevState.html !== this.state.html) {
-      Prism.highlightAll()
-    }
+  const markup = {
+    __html: html
   }
 
-  render() {
-    const { html } = this.state
-
-    const markup = {
-      __html: html
-    }
-
-    return (
-      <div className={cx('markdown-render')} dangerouslySetInnerHTML={markup} />
-    )
-  }
+  return (
+    <div className={cx('markdown-render')} dangerouslySetInnerHTML={markup} />
+  )
 }
 
 export default MarkdownRender
