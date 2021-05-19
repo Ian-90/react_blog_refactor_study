@@ -1,20 +1,19 @@
-import produce from 'immer'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as api from 'lib/api'
 
-const GET_POST_LIST = 'list/GET_POST_LIST'
-const GET_POST_LIST_SUCCESS = 'list/GET_POST_LIST_SUCCESS'
-const GET_POST_LIST_ERROR = 'list/GET_POST_LIST_ERROR'
-
-export const getPostList = ({ page, tag }) => async dispatch => {
-  dispatch({ type: GET_POST_LIST })
+const fetchPostList = async ({ page, tag }) => {
   try {
-    const { data: posts, headers } = await api.getPostList({ page, tag })
-    const lastPage = headers['last-page']
-    dispatch({ type: GET_POST_LIST_SUCCESS, payload: { posts, lastPage } })
-  } catch (error) {
-    dispatch({ type: GET_POST_LIST_ERROR, payload: error })
+    const res = await api.getPostList({ page, tag })
+    return {
+      posts: res.data,
+      lastPage: res.headers['last-page']
+    }
+  } catch (err) {
+    console.error(err)
   }
 }
+
+export const getPostList = createAsyncThunk('list/GET_POST_LIST', fetchPostList)
 
 const initialState = {
   loading: false,
@@ -23,23 +22,23 @@ const initialState = {
   lastPage: null,
 }
 
-const listReducer = produce((state, action) => {
-  switch (action.type) {
-    case GET_POST_LIST:
+const listSlice = createSlice({
+  name: 'list',
+  initialState,
+  extraReducers: {
+    [getPostList.pending]: (state, action) => {
       state.loading = true
-      return state
-    case GET_POST_LIST_SUCCESS:
+    },
+    [getPostList.fulfilled]: (state, action) => {
       state.loading = false
       state.posts = action.payload.posts
       state.lastPage = Number(action.payload.lastPage)
-      return state
-    case GET_POST_LIST_ERROR:
+    },
+    [getPostList.rejected]: (state, action) => {
       state.loading = false
       state.error = action.payload
-      return state
-    default:
-      return state
+    }
   }
-}, initialState)
+})
 
-export default listReducer
+export default listSlice.reducer

@@ -1,20 +1,18 @@
-import produce from 'immer'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as api from 'lib/api'
 
-const GET_POST = 'post/GET_POST'
-const GET_POST_SUCCESS = 'post/GET_POST_SUCCESS'
-const GET_POST_ERROR = 'post/GET_POST_ERROR'
-
 export const removePost = api.removePost
-export const getPost = (id) => async (dispatch) => {
-  dispatch({ type: GET_POST})
+
+const fetchPost = async (id) => {
   try {
-    const { data } = await api.getPost(id)
-    dispatch({ type: GET_POST_SUCCESS, payload: data })
-  } catch (error) {
-    dispatch({ type: GET_POST_ERROR, payload: error })
+    const res = await api.getPost(id)
+    return res.data
+  } catch (err) {
+    console.error(err)
   }
 }
+
+export const getPost = createAsyncThunk('post/GET_POST',fetchPost)
 
 const initialState = {
   loading: false,
@@ -22,22 +20,22 @@ const initialState = {
   error: null
 }
 
-const postReducer = produce((state, action) => {
-  switch(action.type) {
-    case GET_POST:
+const postSlice = createSlice({
+  name: 'post',
+  initialState,
+  extraReducers: {
+    [getPost.pending]: (state, action) => {
       state.loading = true
-      return state
-    case GET_POST_SUCCESS:
+    },
+    [getPost.fulfilled]: (state, action) => {
       state.loading = false
       state.post = action.payload
-      return state
-    case GET_POST_ERROR:
+    },
+    [getPost.rejected]: (state, action) => {
       state.loading = false
       state.error = action.payload
-      return state
-    default:
-      return state
+    },
   }
-}, initialState)
+})
 
-export default postReducer
+export default postSlice.reducer
