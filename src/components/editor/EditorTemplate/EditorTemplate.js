@@ -4,7 +4,7 @@ import styles from './EditorTemplate.module.scss'
 
 const cx = classNames.bind(styles)
 
-const EditorTemplate = ({ header, editor, preview}) => {
+const EditorTemplate = ({ header, editor, preview }) => {
   const [leftPercentage, setLeftPercentage] = useState(0.5)
 
   const handleMouseMove = (e) => setLeftPercentage(e.clientX / window.innerWidth)

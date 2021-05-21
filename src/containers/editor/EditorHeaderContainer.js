@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
 import EditorHeader from 'components/editor/EditorHeader'
 import { useSelector, useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import * as editorActions from 'store/modules/editor'
 import queryString from 'query-string'
 
-const EditorHeaderContainer = ({ history, location }) => {
+const EditorHeaderContainer = () => {
+  const history = useHistory()
+  const location = useLocation()
   const { id } = queryString.parse(location.search)
   const { title, markdown, tags } = useSelector(state => state.editor)
   const dispatch = useDispatch()
@@ -46,4 +48,4 @@ const EditorHeaderContainer = ({ history, location }) => {
   )
 }
 
-export default withRouter(EditorHeaderContainer)
+export default EditorHeaderContainer

@@ -1,12 +1,12 @@
 import Header from 'components/common/Header'
-import { withRouter } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import * as baseActions from 'store/modules/base'
 import { useSelector, useDispatch } from 'react-redux'
 
-const HeaderContainer = ({ match }) => {
+const HeaderContainer = () => {
   const { logged } = useSelector(state => state.base)
   const dispatch = useDispatch()
-  const { id } = match.params
+  const { id } = useParams()
   const handleRemove = () => dispatch(baseActions.showModal('remove'))
   return (
     <Header
@@ -17,4 +17,4 @@ const HeaderContainer = ({ match }) => {
   )
 }
 
-export default withRouter(HeaderContainer)
+export default HeaderContainer

@@ -2,9 +2,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as baseActions from 'store/modules/base'
 import * as postActions from 'store/modules/post'
 import AskRemoveModal from 'components/modal/AskRemoveModal'
-import { withRouter } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
-const AskRemoveModalContainer = ({ history, match }) => {
+const AskRemoveModalContainer = () => {
+  const history = useHistory()
+  const { id } = useParams()
   const { visible } = useSelector(state => ({
     visible: state.base.modal.remove
   }))
@@ -13,7 +15,6 @@ const AskRemoveModalContainer = ({ history, match }) => {
   const handleCancel = () => dispatch(baseActions.hideModal('remove'))
 
   const handleConfirm = async () => {
-    const { id } = match.params
     try {
       await postActions.removePost(id)
       dispatch(baseActions.hideModal('remove'))
@@ -32,4 +33,4 @@ const AskRemoveModalContainer = ({ history, match }) => {
   )
 }
 
-export default withRouter(AskRemoveModalContainer)
+export default AskRemoveModalContainer
